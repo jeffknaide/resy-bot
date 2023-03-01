@@ -2,7 +2,8 @@
 
 Resy exposes a number of API endpoints for making reservations,
 these can be investigated by taking a look at the `api.resy.com` 
-calls from the network tab.
+calls from the network tab. We can have some fun making automated
+calls to those endpoints right when reservations become available
 
 ## Running
 
