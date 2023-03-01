@@ -2,6 +2,7 @@ from requests import Session, HTTPError
 from typing import Dict, List
 
 from resy_bot.constants import RESY_BASE_URL, ResyEndpoints
+from resy_bot.logging import logging
 from resy_bot.models import (
     ResyConfig,
     AuthRequestBody,
@@ -14,6 +15,8 @@ from resy_bot.models import (
     BookRequestBody,
     BookResponseBody,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def build_session(config: ResyConfig) -> Session:
@@ -101,7 +104,7 @@ class ResyApiAccess:
         if not resp.ok:
             raise HTTPError(f"Failed to book slot: {resp.status_code}, {resp.text}")
 
-        print(resp.json())
+        logger.info(resp.json())
         parsed_resp = BookResponseBody(**resp.json())
 
         return parsed_resp.resy_token

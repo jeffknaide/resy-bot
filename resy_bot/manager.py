@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import time
 
+from resy_bot.logging import logging
 from resy_bot.errors import NoSlotsError, ExhaustedRetriesError
 from resy_bot.constants import (
     SECONDS_TO_KEEP_RETRYING,
@@ -19,6 +20,8 @@ from resy_bot.model_builders import (
 )
 from resy_bot.api_access import ResyApiAccess
 from resy_bot.selectors import AbstractSelector, SimpleSelector
+
+logger = logging.getLogger(__name__)
 
 
 class ResyManager:
@@ -60,16 +63,16 @@ class ResyManager:
         if len(slots) == 0:
             raise NoSlotsError("No Slots Found")
         else:
-            print(len(slots))
-            print(slots)
+            logger.info(len(slots))
+            logger.info(slots)
 
         selected_slot = self.selector.select(slots, reservation_request)
 
-        print(selected_slot)
+        logger.info(selected_slot)
         details_request = build_get_slot_details_body(
             reservation_request, selected_slot
         )
-        print(details_request)
+        logger.info(details_request)
         token = self.api_access.get_booking_token(details_request)
 
         booking_request = build_book_request_body(token, self.config)
@@ -88,7 +91,7 @@ class ResyManager:
                 return self.make_reservation(reservation_request)
 
             except NoSlotsError:
-                print(
+                logger.info(
                     f"no slots, retry in {self.retry_config.seconds_between_retries} seconds"
                 )
                 time.sleep(self.retry_config.seconds_between_retries)
@@ -121,7 +124,7 @@ class ResyManager:
             if datetime.now() < (drop_time - timedelta(milliseconds=self.retry_config.seconds_between_retries)):
                 continue
 
-            print(f"time reached, making a reservation now! {datetime.now()}")
+            logger.info(f"time reached, making a reservation now! {datetime.now()}")
             return self.make_reservation_with_retries(
                 reservation_request.reservation_request
             )
