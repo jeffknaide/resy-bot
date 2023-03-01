@@ -12,6 +12,9 @@ calls to those endpoints right when reservations become available
 Primary dependencies are pydantic and requests. 
 pydantic is used for serializing/deserializing requests/responses from Resy. 
 
+This project's dependencies are managed by poetry, so (assuming you have poetry installed) you can just install as easily as 
+`poetry install`.
+
 ### Local Configuration
 
 The primary pieces of configuration for local execution are
@@ -91,7 +94,7 @@ to start searching for slots
 This application can be run from the command line. To do so, 
 the command should be formatted as 
 
-`python main.py <path/to/credentials.json> <path/to/reservation/request.json>`
+`poetry run python main.py <path/to/credentials.json> <path/to/reservation/request.json>`
 
 From here, the application will wait until the time specified by 
 `expected_drop_hour` and `expected_drop_minute` to begin searching
