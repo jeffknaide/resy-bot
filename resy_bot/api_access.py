@@ -24,6 +24,7 @@ def build_session(config: ResyConfig) -> Session:
     headers = {
         "Authorization": config.get_authorization(),
         "X-Resy-Auth-Token": config.token,
+        "origin": "https: // widgets.resy.com",
     }
 
     session.headers.update(headers)
@@ -70,6 +71,7 @@ class ResyApiAccess:
     def get_booking_token(self, params: DetailsRequestBody) -> DetailsResponseBody:
         details_url = RESY_BASE_URL + ResyEndpoints.DETAILS.value
 
+        print(self.session.headers)
         resp = self.session.get(details_url, params=params.dict())
 
         if not resp.ok:
