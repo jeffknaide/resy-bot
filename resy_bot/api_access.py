@@ -71,7 +71,6 @@ class ResyApiAccess:
     def get_booking_token(self, params: DetailsRequestBody) -> DetailsResponseBody:
         details_url = RESY_BASE_URL + ResyEndpoints.DETAILS.value
 
-        print(self.session.headers)
         resp = self.session.get(details_url, params=params.dict())
 
         if not resp.ok:
