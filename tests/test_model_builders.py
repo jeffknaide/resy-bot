@@ -1,23 +1,36 @@
 from datetime import date
+from unittest.mock import patch
 
 from tests.factories import (
     ReservationRequestFactory,
     SlotFactory,
     ResyConfigFactory,
     DetailsResponseBodyFactory,
+    TimedRepeatedReservationRequestFactory,
 )
 from resy_bot.models import (
     FindRequestBody,
     DetailsRequestBody,
-    AuthRequestBody,
-    BookRequestBody,
 )
 from resy_bot.model_builders import (
+    build_timed_reservation_request,
     build_find_request_body,
     build_get_slot_details_body,
     build_auth_request_body,
     build_book_request_body,
 )
+
+
+@patch("resy_bot.model_builders.date")
+def test_build_timed_reservation_request(mock_date):
+    mock_date.today.return_value = date(year=2000, month=4, day=28)
+    repeated_request = TimedRepeatedReservationRequestFactory.create(
+        reservation_request__days_from_now=5
+    )
+    request = build_timed_reservation_request(repeated_request)
+
+    assert request.reservation_request.ideal_date == date(year=2000, month=5, day=3)
+    assert request.expected_drop_hour == repeated_request.expected_drop_hour
 
 
 def test_build_find_request_body():

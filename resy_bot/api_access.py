@@ -47,7 +47,11 @@ class ResyApiAccess:
     def auth(self, body: AuthRequestBody) -> AuthResponseBody:
         auth_url = RESY_BASE_URL + ResyEndpoints.PASSWORD_AUTH.value
 
-        resp = self.session.post(auth_url, data=body.dict(), headers={"content-type": "application/x-www-form-urlencoded"})
+        resp = self.session.post(
+            auth_url,
+            data=body.dict(),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+        )
 
         if not resp.ok:
             raise HTTPError(f"Failed to get auth: {resp.status_code}, {resp.text}")

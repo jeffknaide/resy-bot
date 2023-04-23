@@ -8,5 +8,6 @@ build: clean poetry-config
 	poetry install -vvv
 
 test:
+	poetry run black --check resy_bot main.py
 	poetry run pytest tests/ --cov=resy_bot
-	poetry run mypy resy_bot
+	poetry run mypy resy_bot main.py

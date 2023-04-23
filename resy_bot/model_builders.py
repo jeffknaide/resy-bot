@@ -1,6 +1,8 @@
-from datetime import date
+from datetime import date, timedelta
 from resy_bot.models import (
     ReservationRequest,
+    TimedReservationRequest,
+    TimedRepeatedReservationRequest,
     AuthRequestBody,
     FindRequestBody,
     DetailsRequestBody,
@@ -10,6 +12,21 @@ from resy_bot.models import (
     ResyConfig,
     PaymentMethod,
 )
+
+
+def build_timed_reservation_request(
+    repeat_request: TimedRepeatedReservationRequest,
+) -> TimedReservationRequest:
+    repeat_request_dict = repeat_request.reservation_request.dict()
+    days_from_now = repeat_request_dict.pop("days_from_now")
+    ideal_date = date.today() + timedelta(days=days_from_now)
+    request = ReservationRequest(ideal_date=ideal_date, **repeat_request_dict)
+
+    return TimedReservationRequest(
+        reservation_request=request,
+        expected_drop_hour=repeat_request.expected_drop_hour,
+        expected_drop_minute=repeat_request.expected_drop_minute,
+    )
 
 
 def build_find_request_body(reservation: ReservationRequest) -> FindRequestBody:

@@ -26,6 +26,21 @@ class ReservationRequest(BaseModel):
     preferred_type: Optional[str]
 
 
+class RepeatedReservationRequest(BaseModel):
+    """
+    instead of specifying a date, specify the number of days from now
+    """
+
+    venue_id: str
+    party_size: int
+    days_from_now: int
+    ideal_hour: int
+    ideal_minute: int
+    window_hours: int
+    prefer_early: bool
+    preferred_type: Optional[str]
+
+
 class ReservationRetriesConfig(BaseModel):
     seconds_between_retries: float
     retry_duration: float
@@ -33,6 +48,12 @@ class ReservationRetriesConfig(BaseModel):
 
 class TimedReservationRequest(BaseModel):
     reservation_request: ReservationRequest
+    expected_drop_hour: int
+    expected_drop_minute: int
+
+
+class TimedRepeatedReservationRequest(BaseModel):
+    reservation_request: RepeatedReservationRequest
     expected_drop_hour: int
     expected_drop_minute: int
 

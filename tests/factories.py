@@ -5,8 +5,10 @@ from random import randint
 from resy_bot.models import (
     ResyConfig,
     ReservationRequest,
+    RepeatedReservationRequest,
     ReservationRetriesConfig,
     TimedReservationRequest,
+    TimedRepeatedReservationRequest,
     Slot,
     SlotConfig,
     SlotDate,
@@ -39,6 +41,20 @@ class ReservationRequestFactory(factory.Factory):
     preferred_type = factory.Faker("bs")
 
 
+class RepeatedReservationRequestFactory(factory.Factory):
+    class Meta:
+        model = RepeatedReservationRequest
+
+    venue_id = factory.Faker("bs")
+    party_size = factory.Faker("random_int")
+    days_from_now = factory.Faker("random_int")
+    ideal_hour = factory.LazyFunction(lambda: randint(1, 23))
+    ideal_minute = factory.LazyFunction(lambda: randint(0, 59))
+    window_hours = factory.LazyFunction(lambda: randint(0, 4))
+    prefer_early = factory.Faker("boolean")
+    preferred_type = factory.Faker("bs")
+
+
 class ReservationRetriesConfigFactory(factory.Factory):
     class Meta:
         model = ReservationRetriesConfig
@@ -52,6 +68,15 @@ class TimedReservationRequestFactory(factory.Factory):
         model = TimedReservationRequest
 
     reservation_request = factory.SubFactory(ReservationRequestFactory)
+    expected_drop_hour = factory.LazyFunction(lambda: randint(1, 24))
+    expected_drop_minute = factory.LazyFunction(lambda: randint(0, 60))
+
+
+class TimedRepeatedReservationRequestFactory(factory.Factory):
+    class Meta:
+        model = TimedRepeatedReservationRequest
+
+    reservation_request = factory.SubFactory(RepeatedReservationRequestFactory)
     expected_drop_hour = factory.LazyFunction(lambda: randint(1, 24))
     expected_drop_minute = factory.LazyFunction(lambda: randint(0, 60))
 

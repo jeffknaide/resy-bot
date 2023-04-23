@@ -121,7 +121,10 @@ class ResyManager:
         drop_time = self._get_drop_time(reservation_request)
 
         while True:
-            if datetime.now() < (drop_time - timedelta(milliseconds=self.retry_config.seconds_between_retries)):
+            early_start_td = timedelta(
+                milliseconds=self.retry_config.seconds_between_retries
+            )
+            if datetime.now() < (drop_time - early_start_td):
                 continue
 
             logger.info(f"time reached, making a reservation now! {datetime.now()}")
