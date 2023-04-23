@@ -89,6 +89,37 @@ to start searching for slots
 to start searching for slots
 
 
+#### Timed Repeated Reservation Request
+
+Some reservations are particularly hard to get. For that case, we can create a 
+`TimedRepeatedReservationRequest` JSON - this will allow us to simply specify the
+number of days in advance that a reservation goes live and run repeatedly across
+several days. 
+
+The nice piece of this approach is it allows us to keep the JSON constant rather
+than repeatedly changing the `ideal_date` field.
+
+This object will look nearly identical to the `TimedReservationRequest`, just with the
+`ideal_date` field swapped out for `days_from_now`
+
+```json
+{
+"reservation_request": {
+  "party_size": 4,
+  "venue_id": 12345,
+  "window_hours": 1,
+  "prefer_early": false,
+  "days_from_now": 14,
+  "ideal_hour": 19,
+  "ideal_minute": 30,
+  "preferred_type": "Dining Room"
+},
+  "expected_drop_hour": "10",
+  "expected_drop_minute": "0"
+}
+```
+
+
 ### Command Line Execution
 
 This application can be run from the command line. To do so, 
@@ -99,3 +130,9 @@ the command should be formatted as
 From here, the application will wait until the time specified by 
 `expected_drop_hour` and `expected_drop_minute` to begin searching
 for available timeslots.
+
+If you are looking to make a repeated reservation (see above for some discussion of the 
+configuration for this case), you must also include the `--repeated_request` argument.
+As such, the command should look like:
+
+`poetry run python main.py <path/to/credentials.json> <path/to/reservation/request.json> --repeated_request`
