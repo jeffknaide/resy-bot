@@ -24,7 +24,11 @@ def build_session(config: ResyConfig) -> Session:
     headers = {
         "Authorization": config.get_authorization(),
         "X-Resy-Auth-Token": config.token,
-        "origin": "https: // widgets.resy.com",
+        "X-Resy-Universal-Auth": config.token,
+        "Origin": "https://resy.com",
+        "X-origin": "https://resy.com",
+        "Referrer": "https://resy.com/",
+        "Accept": "application/json, text/plain, */*"
     }
 
     session.headers.update(headers)
@@ -85,7 +89,7 @@ class ResyApiAccess:
         requests lib doesn't urlencode nested dictionaries,
         so dump struct_payment_method to json and slot that in the dict
         """
-        payment_method = body.struct_payment_method.json()
+        payment_method = body.struct_payment_method.json().replace(" ", "")
         body_dict = body.dict()
         body_dict["struct_payment_method"] = payment_method
         return body_dict
@@ -96,10 +100,18 @@ class ResyApiAccess:
 
         body_dict = self._dump_book_request_body_to_dict(body)
 
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Origin": "https://widgets.resy.com",
+            "X-Origin": "https://widgets.resy.com",
+            "Referrer": "https://widgets.resy.com/",
+            "Cache-Control": "no-cache",
+        }
+
         resp = self.session.post(
             book_url,
             data=body_dict,
-            headers={"content-type": "application/x-www-form-urlencoded"},
+            headers=headers,
         )
 
         if not resp.ok:

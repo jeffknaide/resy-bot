@@ -52,11 +52,11 @@ class AuthResponseBody(BaseModel):
 
 
 class FindRequestBody(BaseModel):
-    venue_id: Optional[str]
-    party_size: int
-    day: str
     lat: str = "0"
     long: str = "0"
+    day: str
+    party_size: int
+    venue_id: Optional[str]
 
     @validator("day")
     def validate_day(cls, day: str) -> str:
