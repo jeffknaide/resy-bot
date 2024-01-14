@@ -9,8 +9,6 @@ from tests.factories import (
 from resy_bot.models import (
     FindRequestBody,
     DetailsRequestBody,
-    AuthRequestBody,
-    BookRequestBody,
 )
 from resy_bot.model_builders import (
     build_find_request_body,

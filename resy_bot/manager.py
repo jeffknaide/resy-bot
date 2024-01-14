@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
-import time
 
 from resy_bot.logging import logging
 from resy_bot.errors import NoSlotsError, ExhaustedRetriesError
 from resy_bot.constants import (
-    SECONDS_TO_KEEP_RETRYING,
+    N_RETRIES,
     SECONDS_TO_WAIT_BETWEEN_RETRIES,
 )
 from resy_bot.models import (
@@ -22,6 +21,7 @@ from resy_bot.api_access import ResyApiAccess
 from resy_bot.selectors import AbstractSelector, SimpleSelector
 
 logger = logging.getLogger(__name__)
+logger.setLevel("INFO")
 
 
 class ResyManager:
@@ -31,7 +31,7 @@ class ResyManager:
         selector = SimpleSelector()
         retry_config = ReservationRetriesConfig(
             seconds_between_retries=SECONDS_TO_WAIT_BETWEEN_RETRIES,
-            retry_duration=SECONDS_TO_KEEP_RETRYING,
+            n_retries=N_RETRIES,
         )
         return cls(config, api_access, selector, retry_config)
 
@@ -59,6 +59,7 @@ class ResyManager:
         body = build_find_request_body(reservation_request)
 
         slots = self.api_access.find_booking_slots(body)
+        logger.info(f"Returned: {slots}")
 
         if len(slots) == 0:
             raise NoSlotsError("No Slots Found")
@@ -84,21 +85,17 @@ class ResyManager:
     def make_reservation_with_retries(
         self, reservation_request: ReservationRequest
     ) -> str:
-        cutoff = datetime.now() + timedelta(seconds=self.retry_config.retry_duration)
-        # don't want microsecond rounding to have us requesting early
-        while datetime.now() < cutoff:
+        for _ in range(self.retry_config.n_retries):
             try:
                 return self.make_reservation(reservation_request)
 
             except NoSlotsError:
                 logger.info(
-                    f"no slots, retry in {self.retry_config.seconds_between_retries} seconds"
+                    f"no slots, retrying; currently {datetime.now().isoformat()}"
                 )
-                time.sleep(self.retry_config.seconds_between_retries)
 
         raise ExhaustedRetriesError(
-            f"Retried {self.retry_config.retry_duration} seconds, "
-            "without finding a slot"
+            f"Retried {self.retry_config.n_retries} times, " "without finding a slot"
         )
 
     def _get_drop_time(self, reservation_request: TimedReservationRequest) -> datetime:
@@ -117,11 +114,14 @@ class ResyManager:
         """
         cycle until we hit the opening time, then run & return the reservation
         """
-
         drop_time = self._get_drop_time(reservation_request)
+        last_check = datetime.now()
 
         while True:
-            if datetime.now() < (drop_time - timedelta(milliseconds=self.retry_config.seconds_between_retries)):
+            if datetime.now() < drop_time:
+                if datetime.now() - last_check > timedelta(seconds=10):
+                    logger.info(f"{datetime.now()}: still waiting")
+                    last_check = datetime.now()
                 continue
 
             logger.info(f"time reached, making a reservation now! {datetime.now()}")

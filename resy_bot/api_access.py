@@ -1,3 +1,4 @@
+from datetime import datetime
 from requests import Session, HTTPError
 from typing import Dict, List
 
@@ -17,6 +18,7 @@ from resy_bot.models import (
 )
 
 logger = logging.getLogger(__name__)
+logger.setLevel("INFO")
 
 
 def build_session(config: ResyConfig) -> Session:
@@ -24,7 +26,11 @@ def build_session(config: ResyConfig) -> Session:
     headers = {
         "Authorization": config.get_authorization(),
         "X-Resy-Auth-Token": config.token,
-        "origin": "https: // widgets.resy.com",
+        "X-Resy-Universal-Auth": config.token,
+        "Origin": "https://resy.com",
+        "X-origin": "https://resy.com",
+        "Referrer": "https://resy.com/",
+        "Accept": "application/json, text/plain, */*",
     }
 
     session.headers.update(headers)
@@ -47,7 +53,11 @@ class ResyApiAccess:
     def auth(self, body: AuthRequestBody) -> AuthResponseBody:
         auth_url = RESY_BASE_URL + ResyEndpoints.PASSWORD_AUTH.value
 
-        resp = self.session.post(auth_url, data=body.dict(), headers={"content-type": "application/x-www-form-urlencoded"})
+        resp = self.session.post(
+            auth_url,
+            data=body.dict(),
+            headers={"content-type": "application/x-www-form-urlencoded"},
+        )
 
         if not resp.ok:
             raise HTTPError(f"Failed to get auth: {resp.status_code}, {resp.text}")
@@ -57,7 +67,13 @@ class ResyApiAccess:
     def find_booking_slots(self, params: FindRequestBody) -> List[Slot]:
         find_url = RESY_BASE_URL + ResyEndpoints.FIND.value
 
+        logger.info(
+            f"{datetime.now().isoformat()} Sending request to find booking slots"
+        )
+
         resp = self.session.get(find_url, params=params.dict())
+
+        logger.info(f"{datetime.now().isoformat()} Received response for ")
 
         if not resp.ok:
             raise HTTPError(
@@ -85,21 +101,28 @@ class ResyApiAccess:
         requests lib doesn't urlencode nested dictionaries,
         so dump struct_payment_method to json and slot that in the dict
         """
-        payment_method = body.struct_payment_method.json()
+        payment_method = body.struct_payment_method.json().replace(" ", "")
         body_dict = body.dict()
         body_dict["struct_payment_method"] = payment_method
         return body_dict
 
     def book_slot(self, body: BookRequestBody) -> str:
-
         book_url = RESY_BASE_URL + ResyEndpoints.BOOK.value
 
         body_dict = self._dump_book_request_body_to_dict(body)
 
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Origin": "https://widgets.resy.com",
+            "X-Origin": "https://widgets.resy.com",
+            "Referrer": "https://widgets.resy.com/",
+            "Cache-Control": "no-cache",
+        }
+
         resp = self.session.post(
             book_url,
             data=body_dict,
-            headers={"content-type": "application/x-www-form-urlencoded"},
+            headers=headers,
         )
 
         if not resp.ok:

@@ -6,6 +6,7 @@ from resy_bot.models import ResyConfig, TimedReservationRequest
 from resy_bot.manager import ResyManager
 
 logger = logging.getLogger(__name__)
+logger.setLevel("INFO")
 
 
 def wait_for_drop_time(resy_config_path: str, reservation_config_path: str) -> str:

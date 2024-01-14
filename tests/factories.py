@@ -39,6 +39,20 @@ class ReservationRequestFactory(factory.Factory):
     preferred_type = factory.Faker("bs")
 
 
+class ReservationRequestDaysInAdvanceFactory(factory.Factory):
+    class Meta:
+        model = ReservationRequest
+
+    venue_id = factory.Faker("bs")
+    party_size = factory.Faker("random_int")
+    days_in_advance = factory.Faker("random_int")
+    ideal_hour = factory.LazyFunction(lambda: randint(1, 23))
+    ideal_minute = factory.LazyFunction(lambda: randint(0, 59))
+    window_hours = factory.LazyFunction(lambda: randint(0, 4))
+    prefer_early = factory.Faker("boolean")
+    preferred_type = factory.Faker("bs")
+
+
 class ReservationRetriesConfigFactory(factory.Factory):
     class Meta:
         model = ReservationRetriesConfig

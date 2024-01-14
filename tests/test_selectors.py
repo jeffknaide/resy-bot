@@ -21,8 +21,7 @@ def test_simple_selector_select_exact_match():
     )
 
     correct_slot = SlotFactory.create(
-        date__start=ideal_start_dt,
-        config__type=request.preferred_type
+        date__start=ideal_start_dt, config__type=request.preferred_type
     )
 
     slots.append(correct_slot)
@@ -89,9 +88,7 @@ def test_simple_selector_select_time_match_without_preferred_type_match():
 
 def test_simple_selector_select_early_if_equally_off():
     request = ReservationRequestFactory.create(
-        preferred_type=None,
-        prefer_early=True,
-        window_hours=1
+        preferred_type=None, prefer_early=True, window_hours=1
     )
     slots = SlotFactory.create_batch(5)
 
@@ -124,9 +121,7 @@ def test_simple_selector_select_early_if_equally_off():
 
 def test_simple_selector_select_later_if_equally_off():
     request = ReservationRequestFactory.create(
-        preferred_type=None,
-        prefer_early=False,
-        window_hours=1
+        preferred_type=None, prefer_early=False, window_hours=1
     )
     slots = SlotFactory.create_batch(5)
 
@@ -159,11 +154,8 @@ def test_simple_selector_select_later_if_equally_off():
 
 def test_simple_selector_no_slots_in_window():
     request = ReservationRequestFactory.create(
-        preferred_type=None,
-        prefer_early=False,
-        window_hours=1
+        preferred_type=None, prefer_early=False, window_hours=1
     )
-    slots = SlotFactory.create_batch(5)
 
     ideal_start_dt = datetime(
         year=request.ideal_date.year,
