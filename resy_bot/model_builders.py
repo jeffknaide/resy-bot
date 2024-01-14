@@ -13,8 +13,7 @@ from resy_bot.models import (
 
 
 def build_find_request_body(reservation: ReservationRequest) -> FindRequestBody:
-
-    day = date.strftime(reservation.ideal_date, "%Y-%m-%d")
+    day = date.strftime(reservation.target_date, "%Y-%m-%d")
 
     return FindRequestBody(
         venue_id=reservation.venue_id, party_size=reservation.party_size, day=day
@@ -24,8 +23,7 @@ def build_find_request_body(reservation: ReservationRequest) -> FindRequestBody:
 def build_get_slot_details_body(
     reservation: ReservationRequest, slot: Slot
 ) -> DetailsRequestBody:
-
-    day = date.strftime(reservation.ideal_date, "%Y-%m-%d")
+    day = date.strftime(reservation.target_date, "%Y-%m-%d")
     config_id = slot.config.token
 
     return DetailsRequestBody(

@@ -10,6 +10,7 @@ packages = [{include = "resy_bot"}]
 python = "^3.10"
 pydantic = "^1.10.4"
 requests = "^2.28.2"
+pre-commit = "^3.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

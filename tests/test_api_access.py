@@ -157,15 +157,20 @@ def test_book_slot():
 
     output = api_access.book_slot(body)
 
-    payment_json = body.struct_payment_method.json()
+    payment_json = body.struct_payment_method.json().replace(" ", "")
     body_dict = body.dict()
     body_dict["struct_payment_method"] = payment_json
 
-    session.post.assert_called_once_with(
-        "https://api.resy.com/3/book",
-        data=body_dict,
-        headers={"content-type": "application/x-www-form-urlencoded"},
-    )
+    session.post.assert_called_once()
+    assert session.post.call_args[0][0] == "https://api.resy.com/3/book"
+    assert session.post.call_args[1]["data"] == body_dict
+    assert session.post.call_args[1]["headers"] == {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Origin": "https://widgets.resy.com",
+        "X-Origin": "https://widgets.resy.com",
+        "Referrer": "https://widgets.resy.com/",
+        "Cache-Control": "no-cache",
+    }
 
     assert output == expected_resp.resy_token
 

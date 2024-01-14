@@ -17,13 +17,12 @@ class SimpleSelector(AbstractSelector):
         """
         simple selection algo that assumes a sorted list of slots
         if preferred slot is provided, that is the only selectable option
-
         """
         window_timedelta = timedelta(hours=request.window_hours)
         ideal_datetime = datetime(
-            request.ideal_date.year,
-            request.ideal_date.month,
-            request.ideal_date.day,
+            request.target_date.year,
+            request.target_date.month,
+            request.target_date.day,
             request.ideal_hour,
             request.ideal_minute,
         )

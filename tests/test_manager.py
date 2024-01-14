@@ -20,6 +20,7 @@ from tests.factories import (
     DetailsResponseBodyFactory,
     ReservationRetriesConfigFactory,
     TimedReservationRequestFactory,
+    ReservationRequestDaysInAdvanceFactory,
 )
 
 
@@ -50,6 +51,52 @@ def test_make_reservation():
     manager.make_reservation(request)
 
     expected_day = request.ideal_date.strftime("%Y-%m-%d")
+
+    expected_find_request_body = FindRequestBody(
+        venue_id=request.venue_id, party_size=request.party_size, day=expected_day
+    )
+
+    expected_details_request_body = DetailsRequestBody(
+        config_id=slots[0].config.token, day=expected_day, party_size=request.party_size
+    )
+
+    expected_booking_request = BookRequestBody(
+        book_token=details_response.book_token.value,
+        struct_payment_method=PaymentMethod(id=config.payment_method_id),
+    )
+
+    mock_api_access.find_booking_slots.assert_called_once_with(
+        expected_find_request_body
+    )
+
+    mock_selector.select.assert_called_once_with(slots, request)
+
+    mock_api_access.get_booking_token.assert_called_once_with(
+        expected_details_request_body
+    )
+
+    mock_api_access.book_slot.assert_called_once_with(expected_booking_request)
+
+
+def test_make_reservation_days_in_advance():
+    config = ResyConfigFactory.create()
+    retries_config = ReservationRetriesConfigFactory.create()
+    request = ReservationRequestDaysInAdvanceFactory.create()
+    mock_api_access = MagicMock()
+    slots = SlotFactory.create_batch(3)
+    mock_api_access.find_booking_slots.return_value = slots
+
+    details_response = DetailsResponseBodyFactory.create()
+    mock_api_access.get_booking_token.return_value = details_response
+
+    mock_selector = MagicMock()
+    mock_selector.select.return_value = slots[0]
+
+    manager = ResyManager(config, mock_api_access, mock_selector, retries_config)
+
+    manager.make_reservation(request)
+
+    expected_day = request.target_date.strftime("%Y-%m-%d")
 
     expected_find_request_body = FindRequestBody(
         venue_id=request.venue_id, party_size=request.party_size, day=expected_day
