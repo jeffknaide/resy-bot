@@ -5,8 +5,18 @@ from resy_bot.logging import logging
 from resy_bot.models import ResyConfig, TimedReservationRequest
 from resy_bot.manager import ResyManager
 
+from flask import Flask, request, Response
+
+
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
+
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def respond():
+    print(request.json);
+    return Response(status=200)
 
 
 def wait_for_drop_time(resy_config_path: str, reservation_config_path: str) -> str:
@@ -37,4 +47,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    wait_for_drop_time(args.resy_config_path, args.reservation_config_path)
+    app.run(debug = True, host = "0.0.0.0", port = 3000)
+
+    ### wait_for_drop_time(args.resy_config_path, args.reservation_config_path)
