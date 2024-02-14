@@ -10,6 +10,7 @@ from resy_bot.models import (
     ResyConfig,
     ReservationRequest,
     TimedReservationRequest,
+    WaitlistReservationRequest,
     ReservationRetriesConfig,
 )
 from resy_bot.model_builders import (
@@ -53,6 +54,9 @@ class ResyManager:
             will use geolocator to get lat/long
         :return:
         """
+        pass
+
+    def format_notification_request(self, request_info):
         pass
 
     def make_reservation(self, reservation_request: ReservationRequest) -> str:
@@ -125,6 +129,18 @@ class ResyManager:
                 continue
 
             logger.info(f"time reached, making a reservation now! {datetime.now()}")
+            return self.make_reservation_with_retries(
+                reservation_request.reservation_request
+            )
+
+    def make_reservation_now(
+        self, reservation_request: WaitlistReservationRequest
+    ) -> str:
+        """
+        cycle until we hit the opening time, then run & return the reservation
+        """
+        while True:
+            logger.info(f"making a reservation now! {datetime.now()}")
             return self.make_reservation_with_retries(
                 reservation_request.reservation_request
             )

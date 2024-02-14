@@ -22,6 +22,7 @@ class ReservationRequest(BaseModel):
     ideal_minute: int
     window_hours: int
     prefer_early: bool
+    venue_name: Optional[str]
     preferred_type: Optional[str]
     ideal_date: Optional[date]
     days_in_advance: Optional[int]
@@ -58,6 +59,9 @@ class TimedReservationRequest(BaseModel):
     reservation_request: ReservationRequest
     expected_drop_hour: int
     expected_drop_minute: int
+
+class WaitlistReservationRequest(BaseModel):
+    ReservationRequest: ReservationRequest
 
 
 class AuthRequestBody(BaseModel):

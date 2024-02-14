@@ -12,6 +12,7 @@ pydantic = "^1.10.4"
 requests = "^2.28.2"
 pre-commit = "^3.6.0"
 flask = "^3.0.2"
+dateparser = "^1.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
