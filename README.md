@@ -101,3 +101,6 @@ the command should be formatted as
 From here, the application will wait until the time specified by
 `expected_drop_hour` and `expected_drop_minute` to begin searching
 for available timeslots.
+
+### Notes
+- test for local dev curl -X POST -H "Content-Type: application/json" -d '{"id":"7c9be457bc686964710ac0e219b54cc1","received_at":"2024-02-13 15:14:29","received_at_timestamp":1707837269,"received_at_iso8601":"2024-02-13T15:14:29+00:00","processed_at":"2024-02-13 15:29:07","processed_at_timestamp":1707838147,"processed_at_iso8601":"2024-02-13T15:29:07+00:00","available_table":"Minetta Tavern\n\n| Tuesday, Nov 30 at 7:00pm\n\n| Party of 2"}' http://localhost:3000/table-notification
