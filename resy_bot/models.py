@@ -16,7 +16,7 @@ class ResyConfig(BaseModel):
 
 
 class ReservationRequest(BaseModel):
-    venue_id: str
+    venue_id: int
     party_size: int
     ideal_hour: int
     ideal_minute: int
@@ -31,13 +31,13 @@ class ReservationRequest(BaseModel):
     def validate_target_date(cls, data: Dict) -> Dict:
         has_date = data["ideal_date"] is not None
         has_waiting_pd = data["days_in_advance"] is not None
-
         if has_date and has_waiting_pd:
             raise ValueError("Must only provide one of ideal_date or days_in_advance")
         elif has_date or has_waiting_pd:
             return data
 
         raise ValueError("Must provide ideal_date or days_in_advance")
+    
 
     @property
     def target_date(self) -> date:
@@ -60,8 +60,9 @@ class TimedReservationRequest(BaseModel):
     expected_drop_hour: int
     expected_drop_minute: int
 
+
 class WaitlistReservationRequest(BaseModel):
-    ReservationRequest: ReservationRequest
+    reservation_request: ReservationRequest
 
 
 class AuthRequestBody(BaseModel):
