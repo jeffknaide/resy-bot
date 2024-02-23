@@ -2,13 +2,15 @@ import argparse
 import json
 import dateparser
 import datetime
-from resy_bot.logging import logging
+import os
 
+from resy_bot.logging import logging
 from resy_bot.models import ResyConfig, TimedReservationRequest, WaitlistReservationRequest
 from resy_bot.manager import ResyManager
 
 from flask import Flask, request, Response
 
+RESY_USER_CONFIG = os.getenv('RESY_USER_CONFIG')
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -45,8 +47,7 @@ def load_reservations(resy_config_path: str, reservation_config_path: str) -> st
 def wait_for_drop_time(resy_config_path: str, reservation_config_path: str) -> str:
     logger.info("waiting for drop time!")
 
-    with open(resy_config_path, "r") as f:
-        config_data = json.load(f)
+    config_data = json.load(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_data = json.load(f)
@@ -63,8 +64,7 @@ def get_waitlisted_table(resy_config_path: str, reservation_config_path: str,
     
     logger.info("Looking for a reservation from incoming webhook")
 
-    with open(resy_config_path, "r") as f:
-        config_data = json.load(f)
+    config_data = json.load(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_config = json.load(f)
