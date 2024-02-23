@@ -28,7 +28,7 @@ def check_scheduled_reservations(reservation_data) -> str:
 def load_reservations(resy_config_path: str, reservation_config_path: str) -> str:
     logger.info("loading reservation requests")
     
-    config_data = json.load(RESY_USER_CONFIG)
+    config_data = json.loads(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_data = json.load(f)
@@ -46,7 +46,7 @@ def load_reservations(resy_config_path: str, reservation_config_path: str) -> st
 def wait_for_drop_time(resy_config_path: str, reservation_config_path: str) -> str:
     logger.info("waiting for drop time!")
 
-    config_data = json.load(RESY_USER_CONFIG)
+    config_data = json.loads(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_data = json.load(f)
@@ -63,7 +63,7 @@ def get_waitlisted_table(resy_config_path: str, reservation_config_path: str,
     
     logger.info("Looking for a reservation from incoming webhook")
 
-    config_data = json.load(RESY_USER_CONFIG)
+    config_data = json.loads(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_config = json.load(f)
