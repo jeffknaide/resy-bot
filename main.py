@@ -28,8 +28,7 @@ def check_scheduled_reservations(reservation_data) -> str:
 def load_reservations(resy_config_path: str, reservation_config_path: str) -> str:
     logger.info("loading reservation requests")
     
-    with open(resy_config_path, "r") as f:
-        config_data = json.load(f)
+    config_data = json.load(RESY_USER_CONFIG)
 
     with open(reservation_config_path, "r") as f:
         reservation_data = json.load(f)
@@ -91,7 +90,7 @@ def respond():
     data = notification.split("|")
     notification = [x.strip(" \n") for x in data]
     
-    get_waitlisted_table("local.json", "reservation_configs/reservations.json", notification)
+    get_waitlisted_table(RESY_USER_CONFIG, "reservation_configs/reservations.json", notification)
     return Response(status=200)
 
 
