@@ -386,6 +386,21 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
+name = "flask-apscheduler"
+version = "1.13.1"
+description = "Adds APScheduler support to Flask"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Flask-APScheduler-1.13.1.tar.gz", hash = "sha256:b929846f026fb339b76360b0e4fc75da78b75c6d08625715bd0d37949bd607da"},
+]
+
+[package.dependencies]
+apscheduler = ">=3.2.0,<4.0.0"
+flask = ">=2.2.5,<4.0.0"
+python-dateutil = ">=2.4.2"
+
+[[package]]
 name = "gunicorn"
 version = "21.2.0"
 description = "WSGI HTTP Server for UNIX"
@@ -1113,4 +1128,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.2"
-content-hash = "0649e9f4ca3cc2929bb36ae9a345e9612cbb0f499080b5466d129582b2237100"
+content-hash = "f69ded9b10244eb9eb25d5305f3727f9d76c6f50b0715747eb9fcd2470bc0c15"
