@@ -1,0 +1,14 @@
+{
+"reservation_request": {
+  "party_size": 2,
+  "venue_id": 2038,
+  "window_hours": 2,
+  "prefer_early": true,
+  "ideal_date": "2024-02-13",
+  "ideal_hour": 19,
+  "ideal_minute": 30,
+  "preferred_type": "Indoor Dining"
+},
+  "expected_drop_hour": "10",
+  "expected_drop_minute": "56"
+}
