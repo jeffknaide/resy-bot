@@ -127,6 +127,11 @@ class ResyManager:
                     logger.info(f"{datetime.now()}: still waiting")
                     last_check = datetime.now()
                 continue
+            elif datetime.now() > drop_time + timedelta(hours=1):
+                if datetime.now() - last_check > timedelta(seconds=10):
+                    logger.info(f"{datetime.now()}: still waiting")
+                    last_check = datetime.now()
+                continue
 
             logger.info(f"time reached, making a reservation now! {datetime.now()}")
             return self.make_reservation_with_retries(
