@@ -15,7 +15,6 @@ from flask import Flask, request, Response
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
-
 config = Config()
 
 RESY_USER_CONFIG = config.RESY_USER_CONFIG
@@ -24,6 +23,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
 app = Flask(__name__)
+
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 ## initialize scheduler
 #scheduler = APScheduler()
@@ -43,8 +45,6 @@ def load_reservations(reservation_config_path: str) -> str:
     config = ResyConfig(**config_data)
     manager = ResyManager.build(config)
 
-    scheduler = BackgroundScheduler()
-    
     print("checking scheduled reservations")
     scheduled_reservations = reservation_data["scheduled"]
     restaurants = scheduled_reservations.keys()
@@ -54,10 +54,8 @@ def load_reservations(reservation_config_path: str) -> str:
         print(reservation_request)
         logger.info(f"Making a scheduled reservation drop for {reservation_request}")
         timed_request = TimedReservationRequest(**reservation_request)
-        scheduler.add_job(manager.make_reservation_at_opening_time(timed_request), tigger="cron", hour="7")
+        scheduler.add_job(manager.make_reservation_at_opening_time, args=[timed_request], trigger="cron", hour="7", id=r, replace_existing=True)
         job_ids.append(r)
-        
-    scheduler.start()
     
     return job_ids
 
