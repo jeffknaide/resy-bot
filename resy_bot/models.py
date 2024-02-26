@@ -26,6 +26,8 @@ class ReservationRequest(BaseModel):
     preferred_type: Optional[str]
     ideal_date: Optional[date]
     days_in_advance: Optional[int]
+    expected_drop_hour: Optional[int]
+    expected_drop_minute: Optional[int]
 
     @root_validator
     def validate_target_date(cls, data: Dict) -> Dict:
@@ -57,8 +59,6 @@ class ReservationRetriesConfig(BaseModel):
 
 class TimedReservationRequest(BaseModel):
     reservation_request: ReservationRequest
-    expected_drop_hour: int
-    expected_drop_minute: int
 
 
 class WaitlistReservationRequest(BaseModel):

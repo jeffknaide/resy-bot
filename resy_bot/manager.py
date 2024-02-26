@@ -108,8 +108,8 @@ class ResyManager:
             year=now.year,
             month=now.month,
             day=now.day,
-            hour=reservation_request.expected_drop_hour,
-            minute=reservation_request.expected_drop_minute,
+            hour=reservation_request.reservation_request.expected_drop_hour,
+            minute=reservation_request.reservation_request.expected_drop_minute,
         )
 
     def make_reservation_at_opening_time(
@@ -123,6 +123,11 @@ class ResyManager:
 
         while True:
             if datetime.now() < drop_time:
+                if datetime.now() - last_check > timedelta(seconds=10):
+                    logger.info(f"{datetime.now()}: still waiting")
+                    last_check = datetime.now()
+                continue
+            elif datetime.now() > drop_time + timedelta(hours=1):
                 if datetime.now() - last_check > timedelta(seconds=10):
                     logger.info(f"{datetime.now()}: still waiting")
                     last_check = datetime.now()
