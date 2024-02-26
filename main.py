@@ -80,7 +80,7 @@ def get_waitlisted_table(resy_config_path: str, reservation_config_path: str,
     reservation_request = reservation_config["waitlisted"][venue_name]
     
     reservation_request["reservation_request"]["ideal_date"] = dateparser.parse(notification[1])
-    reservation_request["reservation_request"]["party_size"] = int(notification[2].strip("Party of "))
+    reservation_request["reservation_request"]["party_size"] = int(notification[2].strip(" Guests"))
 
     config = ResyConfig(**config_data)
     manager = ResyManager.build(config)
@@ -89,7 +89,7 @@ def get_waitlisted_table(resy_config_path: str, reservation_config_path: str,
     waitlist_request = WaitlistReservationRequest(**reservation_request)
 
     print(waitlist_request)
-    #return manager.make_reservation_now(waitlist_request)
+    return manager.make_reservation_now(waitlist_request)
 
 ### Routes for Flask app
 @app.route('/table-notification', methods=['POST'])
