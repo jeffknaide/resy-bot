@@ -108,8 +108,8 @@ class ResyManager:
             year=now.year,
             month=now.month,
             day=now.day,
-            hour=reservation_request.expected_drop_hour,
-            minute=reservation_request.expected_drop_minute,
+            hour=reservation_request.reservation_request.expected_drop_hour,
+            minute=reservation_request.reservation_request.expected_drop_minute,
         )
 
     def make_reservation_at_opening_time(
