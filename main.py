@@ -4,16 +4,15 @@ import dateparser
 import datetime
 import os
 
+import resy_bot.scheduler as ap_scheduler
+
 from config import Config
 
 from resy_bot.logging import logging
-
 from resy_bot.models import ResyConfig, TimedReservationRequest, WaitlistReservationRequest
 from resy_bot.manager import ResyManager
 
 from flask import Flask, request, Response
-
-from apscheduler.schedulers.background import BackgroundScheduler
 
 config = Config()
 
@@ -24,8 +23,7 @@ logger.setLevel("INFO")
 
 app = Flask(__name__)
 
-scheduler = BackgroundScheduler()
-scheduler.start()
+scheduler = ap_scheduler.initialize()
 
 ## initialize scheduler
 #scheduler = APScheduler()
