@@ -1,7 +1,7 @@
 {
   "preferences": {
     "party_size": 2,
-    "window_hours": 2,
+    "window_hours": 1,
     "prefer_early": true,
     "ideal_hour": 19,
     "ideal_minute": 0
@@ -10,7 +10,7 @@
     "minetta_tavern": {
       "reservation_request": {
         "venue_id": 9846,
-        "party_size": 2,
+        "party_size": 1,
         "ideal_hour": 19,
         "ideal_minute": 0,
         "window_hours": 2,
@@ -31,20 +31,6 @@
     }
   },
   "scheduled": {
-    "minetta_tavern": {
-      "reservation_request": {
-        "venue_id": 9846,
-        "party_size": 2,
-        "ideal_hour": 19,
-        "ideal_minute": 0,
-        "window_hours": 2,
-        "prefer_early": true,
-        "days_in_advance": 21,
-        "expected_drop_hour": 9,
-        "expected_drop_minute": 0,
-        "venue_name": "minetta_tavern"
-      }
-    },
     "4_charles": {
       "reservation_request": {
         "venue_id": 834,
