@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from resy_bot.logging import logging
+from resy_bot.logging import logging, Slogger
 from resy_bot.errors import NoSlotsError, ExhaustedRetriesError
 from resy_bot.constants import (
     N_RETRIES,
@@ -24,6 +24,7 @@ from resy_bot.selectors import AbstractSelector, SimpleSelector
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
 
+slogger = Slogger()
 
 class ResyManager:
     @classmethod
@@ -121,6 +122,8 @@ class ResyManager:
         drop_time = self._get_drop_time(reservation_request)
         last_check = datetime.now()
 
+        slogger(f"Starting up the droptime engine for {reservation_request["venue_name"]} -- waiting until drop time")
+
         while True:
             if datetime.now() < drop_time:
                 if datetime.now() - last_check > timedelta(seconds=10):
@@ -134,6 +137,7 @@ class ResyManager:
                 continue
 
             logger.info(f"time reached, making a reservation now! {datetime.now()}")
+            slogger(f"It's go time -- trying to make a reservation for {reservation_request["venue_name"]}")
             return self.make_reservation_with_retries(
                 reservation_request.reservation_request
             )
