@@ -8,7 +8,7 @@ import resy_bot.scheduler as ap_scheduler
 
 from config import Config
 
-from resy_bot.logging import logging
+from resy_bot.logging import logging, Slogger
 from resy_bot.models import ResyConfig, TimedReservationRequest, WaitlistReservationRequest
 from resy_bot.manager import ResyManager
 
@@ -17,6 +17,7 @@ from flask import Flask, request, Response
 config = Config()
 
 RESY_USER_CONFIG = config.RESY_USER_CONFIG
+SLACK_URL = config.SLACK_URL
 
 logger = logging.getLogger(__name__)
 logger.setLevel("INFO")
@@ -24,6 +25,8 @@ logger.setLevel("INFO")
 app = Flask(__name__)
 
 scheduler = ap_scheduler.initialize()
+
+slogger = Slogger(config.SLACK_URL)
 
 ## initialize scheduler
 #scheduler = APScheduler()
