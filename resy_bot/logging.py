@@ -1,12 +1,16 @@
 import logging
 import sys
 import requests
+from config import Config
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
+config = Config()
+SLACK_URL = config.SLACK_URL
+
 class Slogger:
-    def __init__(self, slack_url) -> None:
-        self.slack_url = slack_url
+    def __init__(self) -> None:
+        self.slack_url = SLACK_URL
         self.headers = {"Content-Type": "application/json"}
 
 
